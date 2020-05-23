@@ -12,7 +12,7 @@ class Product extends Model
         'shop_id',
         'name',
         'price',
-        'image',
+        'images',
         'views',
         'slug'
     ];

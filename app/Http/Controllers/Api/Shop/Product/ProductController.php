@@ -39,26 +39,26 @@ class ProductController extends Controller
             'images' => 'required',
         ]);
         
-        
-        // foreach($request->images as $image){
-
-        //     // $filename = $image->store('public/products');
-        //     // // substr($filename, strlen('public/'));
-        //     $files[] = $image;
-        // }
-        // print_r($files);
-        // return;
-
-        // $data = $request->all();
-        // $data->images = json_encode(['https://imagesfromsomewher.jpg', 'https://imagesfromthesameplace.jpg']);
+        $categoryId = $request->category_id;
+        $subCategoryId = $request->sub_category_id;
+        $productName = $request->name;
         $slug = str_replace(' ', '-', $request->name);
+        //
 
+        foreach($request->images as $image){
+            $photoName = time().'.'.$image->getClientOriginalExtension();
+            // $filename = $image->move(public_path("products"), $photoName);
+            $filename = $image->store("public/products/{$categoryId}/{$subCategoryId}/{$productName}");
+            array_push($files, $filename);
+        }
+   
         $product = Product::create([
             'category_id' => $request->category_id,
             'sub_category_id' => $request->sub_category_id,
             'shop_id' => $request->shop_id,
             'name' => $request->name,
             'price' => $request->price,
+            'images' => json_encode($files),
             'views' => $request->views,
             'slug' => $slug
         ]);
