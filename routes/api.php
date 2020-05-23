@@ -23,8 +23,11 @@ Route::group([
 ], function ($router) {
     Route::get('getUser', 'Api\AuthController@getAuthUser');
     Route::post('refresh', 'Api\AuthController@refresh');
+    Route::get('getShop', 'Api\AuthController@getShop');
     Route::post('logout', 'Api\AuthController@logout');
-
+    /*Product*/
+    Route::resource('products', 'Api\Shop\Product\ProductController');
+    
 });
 
 /*Market*/
@@ -35,10 +38,9 @@ Route::resource('markets.products', 'Api\Shop\Market\MarketProductController', [
 /* * Shop*/
 Route::resource('shops', 'Api\Shop\Shop\ShopController', ['except' => ['create', 'edit']]);
 Route::resource('shops.products', 'Api\Shop\Shop\ShopProductController', ['only' => ['index']]);
-/*Product*/
-Route::resource('products', 'Api\Shop\Product\ProductController', ['only' => ['index', 'show']]);
 /*Category*/
 Route::resource('categories', 'Api\Shop\Category\CategoryController');
+Route::resource('categories.subcategories', 'Api\Shop\Category\CategorySubcategoryController');
 Route::resource('categories.products', 'Api\Shop\Category\CategoryProductController');
 /*Sub Category*/
 Route::resource('subcategories', 'Api\Shop\SubCategory\SubCategoryController');

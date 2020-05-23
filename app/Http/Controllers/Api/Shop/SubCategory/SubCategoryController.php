@@ -37,9 +37,10 @@ class SubCategoryController extends Controller
      * @param \App\ShopModels\SubCategory $subCategory
      * @return \Illuminate\Http\Response
      */
-    public function show(SubCategory $subCategory)
+    public function show($category)
     {
-        //
+        $subCategories = Category::with('subcategories')->where('id', $category)->first();
+        return response()->json($subCategories, 200);
     }
 
 

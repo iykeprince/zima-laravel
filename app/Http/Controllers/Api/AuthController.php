@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\User;
+use App\ShopModels\Shop;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -28,7 +29,16 @@ class AuthController extends Controller
             'register_ip' => request()->ip(),
         ]);
 
-        return response()->json(['data' => $user, 'message' => 'Successfully registered'], 200);
+        $credentials = $request->only(['email', 'password']);
+        if (!$token = auth('api')->attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        return response()->json([
+            'data' => $user, 
+            'message' => 'Successfully registered', 
+            'token' => $token,
+            'isLoggedIn' => true], 200);
     }
 
     public function login(Request $request)
@@ -42,7 +52,7 @@ class AuthController extends Controller
         return response()->json([
             'token' => $token,
             'isLoggedIn' => true
-        ]);
+        ], 200);
     }
 
     public function getAuthUser(Request $request)
@@ -54,6 +64,12 @@ class AuthController extends Controller
         }
 
         return response()->json($user);
+    }
+    
+    public function getShop(){
+        $user = auth()->user()->id;
+        $shop = Shop::where('user_id', $user)->first();
+        return response()->json($shop);
     }
 
     public function refresh()

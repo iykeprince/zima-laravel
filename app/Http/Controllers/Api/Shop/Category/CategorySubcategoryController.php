@@ -1,20 +1,23 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\Shop\Category;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\Controller;
+use App\ShopModels\Category;
 use Illuminate\Http\Request;
 
-class ApiShopMarketMarketProductController extends Controller
+class CategorySubcategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($category)
     {
-        //
+        
+        $subCategories = Category::findOrFail($category)->subcategories;
+        return response()->json($subCategories, 200);
     }
 
     /**
@@ -30,7 +33,7 @@ class ApiShopMarketMarketProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -41,10 +44,10 @@ class ApiShopMarketMarketProductController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param \App\ShopModels\Category $category
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Category $category)
     {
         //
     }
@@ -52,10 +55,10 @@ class ApiShopMarketMarketProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param \App\ShopModels\Category $category
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Category $category)
     {
         //
     }
@@ -63,11 +66,11 @@ class ApiShopMarketMarketProductController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param \App\ShopModels\Category $category
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Category $category)
     {
         //
     }
@@ -75,10 +78,10 @@ class ApiShopMarketMarketProductController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param \App\ShopModels\Category $category
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Category $category)
     {
         //
     }

@@ -19,8 +19,8 @@ use Illuminate\Support\Str;
 
 $factory->define(User::class, function (Faker $faker) {
     return [
-        'first_name' => $faker->name,
-        'last_name' => $faker->name,
+        'first_name' => $faker->firstName,
+        'last_name' => $faker->lastName,
         'email' => $faker->unique()->safeEmail,
         'phone_number' => $faker->phoneNumber,
         'contact_address' => $faker->address,
@@ -110,6 +110,11 @@ $factory->define(\App\ShopModels\Product::class, function (Faker $faker) {
     $shop_id = \App\ShopModels\Shop::all()->random()->id;
     $name = $faker->sentence(1);
     $slug = str_replace([' ', '.'], '-', $name);
+    $fakeImages = [];
+
+    for($i = 0; $i < 3; $i++){
+        $fakeImages[] = $faker->imageUrl(400, 400);
+    }
 
     return [
         'category_id' => $category_id,
@@ -117,7 +122,7 @@ $factory->define(\App\ShopModels\Product::class, function (Faker $faker) {
         'shop_id' => $shop_id,
         'name' => $name,
         'price' => $faker->numberBetween(120, 3000),
-        'image' => $faker->imageUrl(400, 400),
+        'images' => json_encode($fakeImages),
         'views' => random_int(100, 9999),
         'slug' => $slug
     ];

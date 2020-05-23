@@ -20,7 +20,7 @@ class CreateProductsTable extends Migration
             $table->unsignedInteger('shop_id');
             $table->string('name');
             $table->string('price');
-            $table->string('image');
+            $table->text('images')->nullable();
             $table->unsignedInteger('views');
             $table->string('slug')->nullable();
             $table->timestamps();
