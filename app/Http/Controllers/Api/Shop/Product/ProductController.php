@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Shop\Product;
 
 use App\Http\Controllers\Api\Controller;
+use App\ShopModels\Market;
 use App\ShopModels\Shop;
 use App\ShopModels\Product;
 use Illuminate\Http\Request;
@@ -11,6 +12,20 @@ use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
+
+    public function __construct(){
+        $this->middleware('auth.jwt', ['except' => ['show','getProducts']]);
+    }
+
+    public function getProducts(){
+        // $products = DB::table('products')
+        // ->join('shops', 'products.shop_id', '=', 'shops.id')
+        // ->join('markets', 'shops.market_id', '=', 'markets.id')
+        // ->select('products.*', 'shops.user_id', 'markets.name as market_name', 'shops.name as shop_name')
+        // ->get();
+        $products = Product::with('shop.market')->orderBy('created_at', 'desc')->limit(16)->get();
+        return response()->json($products, 200);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -24,7 +39,7 @@ class ProductController extends Controller
                     ->select('products.*', 'shops.user_id', 'shops.name as shop_name')
                     ->where('shops.user_id', $userId)
                     ->get();
-
+        
         return response()->json($products, 200);
     }
 
@@ -74,8 +89,16 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        $product = $product->with('shop.market')->where('id', $product->id)->first();
-        return response()->json($product, 200);
+        $product = $product->with(['shop.market', 'category'])->where('id', $product->id)->first();
+        // $product->images = json_decode($product->images);
+        $markets = Market::all();
+        $similarProducts = $product->with(['shop.market', 'category'])->where('category_id', $product->category_id)->limit(5)->orderBy('created_at', 'DESC')->get();
+
+        return response()->json([
+            'product' => $product,
+            'markets' => $markets,
+            'similar_products' => $similarProducts
+        ], 200);
     }
 
     /**

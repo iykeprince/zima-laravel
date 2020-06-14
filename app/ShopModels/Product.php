@@ -17,12 +17,23 @@ class Product extends Model
         'slug'
     ];
 
+    public function getImagesAttribute($value){
+        return json_decode($value, true);
+    }
+
+    public function setImagesAttributes($value){
+        $this->attribute['images'] = json_encode($value);
+    }
+
     public function shop()
     {
         return $this->belongsTo(Shop::class);
     }
 
-    public function subcategory()
+    public function category(){
+        return $this->belongsTo(Category::class);
+    }
+    public function subcategory() 
     {
         return $this->belongsTo(SubCategory::class);
     }

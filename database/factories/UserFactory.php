@@ -51,6 +51,7 @@ $factory->define(\App\ShopModels\Market::class, function (Faker $faker) {
         'city' => $faker->city,
         'state' => $faker->state,
         'country' => $faker->country,
+        'image' => $faker->imageUrl(),
         'slug' => $slug
     ];
 });
@@ -113,7 +114,9 @@ $factory->define(\App\ShopModels\Product::class, function (Faker $faker) {
     $fakeImages = [];
 
     for($i = 0; $i < 3; $i++){
-        $fakeImages[] = $faker->imageUrl(400, 400);
+        $arr["index"] = $i;
+        $arr["image"] = $faker->imageUrl(400, 400);
+        $fakeImages[] = $arr;
     }
 
     return [

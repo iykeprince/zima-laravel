@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\Shop\Shop;
 use App\Http\Controllers\Api\Controller;
 use App\ShopModels\Shop;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class ShopController extends Controller
 {
@@ -27,23 +29,13 @@ class ShopController extends Controller
      */
     public function store(Request $request)
     {
-        $bannerImage = '';
-        $logoImage = '';
-
-        if ($request->hasFile('banner_image')) {
-            $bannerImage = '';
-        }
-        if ($request->hasFile('logo')) {
-            $logoImage = '';
-        }
-
+        
         try {
             $user = auth()->userOrFail();
         } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
             return response()->json($e->getMessage(), 500);
         }
-//        return response()->json(['user' => auth()->user()], 200);
-
+       
         $shop = new Shop();
         $shop->market_id = $request->market_id;
         $shop->user_id = $user->id;
@@ -54,8 +46,7 @@ class ShopController extends Controller
         $shop->facebook_handle = $request->facebook_handle ?: null;
         $shop->twitter_handle = $request->twitter_handle ?: null;
         $shop->instagram_handle = $request->instagram_handle ?: null;
-        $shop->banner_image = $bannerImage;
-        $shop->logo = $logoImage;
+        
         $shop->save();
 
         return response()->json(['data' => $shop, 'message' => 'Shop was created!'], 200);
@@ -81,7 +72,18 @@ class ShopController extends Controller
      */
     public function update(Request $request, Shop $shop)
     {
-        //
+        $shop->market_id = $request->market_id;
+        $shop->user_id = $request->user_id;
+        $shop->name = $request->name;
+        $shop->address = $request->address;
+        $shop->email = $request->email;
+        $shop->phone_number = $request->phone_number;
+        $shop->facebook_handle = $request->facebook_handle ?: null;
+        $shop->twitter_handle = $request->twitter_handle ?: null;
+        $shop->instagram_handle = $request->instagram_handle ?: null;
+        
+        $shop->save();
+        return response()->json(['data' => $shop, 'message' => 'Shop was updated!'], 200);
     }
 
     /**
@@ -93,5 +95,45 @@ class ShopController extends Controller
     public function destroy(Shop $shop)
     {
         //
+    }
+
+    //uploadLogoImage
+    public function uploadLogoImage(Request $request){
+        $shopId = $request->shop_id;
+        $userId = $request->user_id;
+        $logo = $request->file('logo');
+        $name = time().'-'.$logo->getClientOriginalName();
+        $extension = $logo->getClientOriginalExtension();
+        $dir = '/shops/logos/';
+        $filename = $dir.$name.'.'.$extension;
+        // $path = $request->file('logo')->store($filename, 'local');
+        Storage::disk('public')->put($filename, File::get($logo));
+
+        $shop = Shop::find($shopId);
+        $shop->logo = '/uploads/'.$filename;
+        $shop->save();
+
+        return response()->json([
+            'logo_url' => '/uploads/'.$filename, 
+            'message' => 'logo image uploaded'], 200);
+    }
+
+    //uploadCoverImage
+    public function uploadCoverImage(Request $request){
+        $shopId = $request->shop_id;
+        $bannerImage = $request->file('banner_image');
+        $name = time().'-'.$bannerImage->getClientOriginalName();
+        $extension = $bannerImage->getClientOriginalExtension();
+        $dir = '/shops/banners/';
+        $filename = $dir.'/'.$name.'.'.$extension;
+        Storage::disk('public')->put($filename, File::get($bannerImage));
+        
+        $shop = Shop::find($shopId);
+        $shop->banner_image = '/uploads/'.$filename;
+        $shop->save();
+
+        return response()->json([
+            'banner_url' => '/uploads/'.$filename, 
+            'message' => 'Banner image uploaded'], 200);
     }
 }

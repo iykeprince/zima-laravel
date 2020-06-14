@@ -16,6 +16,8 @@
 //});
 
 Route::post('login', 'Api\AuthController@login');
+Route::post('login-facebook', 'Api\AuthController@loginFacebook');
+Route::post('login-google', 'Api\AuthController@loginGoogle');
 Route::post('register', 'Api\AuthController@register');
 
 Route::group([
@@ -24,12 +26,17 @@ Route::group([
     Route::get('getUser', 'Api\AuthController@getAuthUser');
     Route::post('refresh', 'Api\AuthController@refresh');
     Route::get('getShop', 'Api\AuthController@getShop');
+    
+    Route::post('uploadLogoImage', 'Api\Shop\Shop\ShopController@uploadLogoImage');
+    Route::post('uploadCoverImage', 'Api\Shop\Shop\ShopController@uploadCoverImage');
+    
     Route::post('logout', 'Api\AuthController@logout');
-    /*Product*/
-    Route::resource('products', 'Api\Shop\Product\ProductController');
     
 });
 
+/*Product*/
+Route::resource('products', 'Api\Shop\Product\ProductController');
+Route::get('getProducts', 'Api\Shop\Product\ProductController@getProducts');
 /*Market*/
 Route::resource('markets', 'Api\Shop\Market\MarketController');
 Route::resource('markets.shops', 'Api\Shop\Market\MarketShopController');

@@ -20,6 +20,7 @@ class CreateMarketsTable extends Migration
             $table->string('city');
             $table->string('state');
             $table->string('country');
+            $table->string('image')->nullable();
             $table->string('slug')->nullable();
             $table->timestamps();
         });

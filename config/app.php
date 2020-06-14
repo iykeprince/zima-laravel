@@ -177,7 +177,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         JD\Cloudder\CloudderServiceProvider::class,
         Unicodeveloper\Paystack\PaystackServiceProvider::class,
-
+        
     ],
 
     /*
@@ -230,7 +230,6 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Cloudder' => JD\Cloudder\Facades\Cloudder::class,
         'Paystack' => Unicodeveloper\Paystack\Facades\Paystack::class,
-
     ],
 
 ];

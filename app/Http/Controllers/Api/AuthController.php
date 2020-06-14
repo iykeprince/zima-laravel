@@ -30,7 +30,7 @@ class AuthController extends Controller
         ]);
 
         $credentials = $request->only(['email', 'password']);
-        if (!$token = auth('api')->attempt($credentials)) {
+        if (!$token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -46,29 +46,43 @@ class AuthController extends Controller
         $credentials = $request->only(['email', 'password']);
 
         if (!$token = auth('api')->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Invalid login credential'], 401);
         }
 
         return response()->json([
             'token' => $token,
-            'isLoggedIn' => true
+            'isLoggedIn' => true,
         ], 200);
+    }
+
+    public function loginFacebook(Request $request){
+        dd($request->all());
+    }
+
+    public function loginGoogle(Request $request){
+        dd($request->all());
     }
 
     public function getAuthUser(Request $request)
     {
         try {
             $user = auth()->userOrFail();
-        } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
-            return response()->json($e->getMessage(), 500);
+        } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException  $e) {
+            // if($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException) {
+            //     return response()->json(['token_expired'], $e->getStatusCode());
+            // }else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
+            //     return response()->json(['token_invalid'], $e->getStatusCode());
+            // }else{
+            //     return response()->json(['error'=>'Token is required']);
+            // }
+            return response()->json($e->getMessage());
         }
-
         return response()->json($user);
     }
     
     public function getShop(){
         $user = auth()->user()->id;
-        $shop = Shop::where('user_id', $user)->first();
+        $shop = Shop::with('market')->where('user_id', $user)->first();
         return response()->json($shop);
     }
 
